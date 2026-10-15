@@ -51,7 +51,7 @@ Verás algo como `Uvicorn running on http://127.0.0.1:8000`. Déjalo abierto en 
 ### Con Postman
 
 1. **Import** → selecciona `postman/api-versioning.postman_collection.json`
-2. Ejecuta las peticiones 1 a 6 (botón **Send**).
+2. Ejecuta las peticiones 1 a 7 (botón **Send**), o todas de golpe con clic derecho en la colección → **Run collection**.
 3. En la respuesta de la petición 1, abre la pestaña **Headers**: verás `Deprecation`, `Sunset` y `Link`.
 4. Las pestañas **Test Results** muestran si cada comprobación pasa.
 

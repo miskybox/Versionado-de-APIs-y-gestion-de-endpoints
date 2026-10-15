@@ -32,6 +32,19 @@
     },
     {
       "name": "2. GET v1 - un usuario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('devuelve el usuario 1 con nombre', () => pm.expect(pm.response.json()).to.eql({ id: 1, nombre: 'Eva' }));",
+              "pm.test('v1 avisa con la cabecera Deprecation', () => pm.response.to.have.header('Deprecation'));"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -61,6 +74,19 @@
     },
     {
       "name": "4. GET v2 - un usuario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('devuelve el usuario 1 con fullName y email', () => pm.expect(pm.response.json()).to.eql({ id: 1, fullName: 'Eva', email: 'eva@example.com' }));",
+              "pm.test('v2 NO tiene cabecera Deprecation', () => pm.response.to.not.have.header('Deprecation'));"
+            ]
+          }
+        }
+      ],
       "request": {
         "method": "GET",
         "header": [],
@@ -107,6 +133,30 @@
         "method": "GET",
         "header": [],
         "url": { "raw": "{{baseUrl}}/v2/users/999", "host": ["{{baseUrl}}"], "path": ["v2", "users", "999"] }
+      }
+    },
+    {
+      "name": "7. POST v2 - falta el email (422)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('422 Unprocessable Entity', () => pm.response.to.have.status(422));",
+              "pm.test('el error señala el campo email', () => pm.expect(pm.response.json().detail[0].loc).to.include('email'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Sin email\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/v2/users", "host": ["{{baseUrl}}"], "path": ["v2", "users"] }
       }
     }
   ]
