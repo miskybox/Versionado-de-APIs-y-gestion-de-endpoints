@@ -1,0 +1,113 @@
+{
+  "info": {
+    "name": "Demo versionado de APIs (FastAPI)",
+    "description": "Importa este archivo en Postman. Arranca antes la API con: uvicorn app.main:app --reload",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" }
+  ],
+  "item": [
+    {
+      "name": "1. GET v1 - listar usuarios (deprecada)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('v1 usa el campo nombre', () => pm.expect(pm.response.json()[0]).to.have.property('nombre'));",
+              "pm.test('v1 avisa con la cabecera Deprecation', () => pm.response.to.have.header('Deprecation'));",
+              "pm.test('v1 avisa con la cabecera Sunset', () => pm.response.to.have.header('Sunset'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/v1/users", "host": ["{{baseUrl}}"], "path": ["v1", "users"] }
+      }
+    },
+    {
+      "name": "2. GET v1 - un usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/v1/users/1", "host": ["{{baseUrl}}"], "path": ["v1", "users", "1"] }
+      }
+    },
+    {
+      "name": "3. GET v2 - listar usuarios (actual)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('200 OK', () => pm.response.to.have.status(200));",
+              "pm.test('v2 usa el campo fullName', () => pm.expect(pm.response.json()[0]).to.have.property('fullName'));",
+              "pm.test('v2 NO tiene cabecera Deprecation', () => pm.response.to.not.have.header('Deprecation'));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/v2/users", "host": ["{{baseUrl}}"], "path": ["v2", "users"] }
+      }
+    },
+    {
+      "name": "4. GET v2 - un usuario",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/v2/users/1", "host": ["{{baseUrl}}"], "path": ["v2", "users", "1"] }
+      }
+    },
+    {
+      "name": "5. POST v2 - crear usuario (201)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('201 Created', () => pm.response.to.have.status(201));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Marie\",\n  \"email\": \"marie@example.com\"\n}"
+        },
+        "url": { "raw": "{{baseUrl}}/v2/users", "host": ["{{baseUrl}}"], "path": ["v2", "users"] }
+      }
+    },
+    {
+      "name": "6. GET v2 - usuario que no existe (404)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('404 Not Found', () => pm.response.to.have.status(404));"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/v2/users/999", "host": ["{{baseUrl}}"], "path": ["v2", "users", "999"] }
+      }
+    }
+  ]
+}
